@@ -497,6 +497,7 @@ class RTDETRDecoder(nn.Module):
 class v10Detect(Detect):
 
     max_det = -1
+    platform = ''
 
     def __init__(self, nc=80, ch=()):
         super().__init__(nc, ch)
@@ -509,6 +510,14 @@ class v10Detect(Detect):
         self.one2one_cv3 = copy.deepcopy(self.cv3)
     
     def forward(self, x):
+        if self.platform == 'rk3588' and self.export:
+            print(f'platform = {self.platform}')
+            y = []
+            for i in range(self.nl):
+                y.append(self.one2one_cv2[i](x[i]))
+                y.append(torch.sigmoid(self.one2one_cv3[i](x[i])))
+            return y
+
         one2one = self.forward_feat([xi.detach() for xi in x], self.one2one_cv2, self.one2one_cv3)
         if not self.export:
             one2many = super().forward(x)

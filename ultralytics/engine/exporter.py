@@ -231,6 +231,7 @@ class Exporter:
                 m.format = self.args.format
                 if isinstance(m, v10Detect):
                     m.max_det = self.args.max_det
+                    m.platform = self.args.platform
 
             elif isinstance(m, C2f) and not any((saved_model, pb, tflite, edgetpu, tfjs)):
                 # EdgeTPU does not support FlexSplitV while split provides cleaner ONNX graph
@@ -366,6 +367,15 @@ class Exporter:
         f = str(self.file.with_suffix(".onnx"))
 
         output_names = ["output0", "output1"] if isinstance(self.model, SegmentationModel) else ["output0"]
+        if self.args.platform == "rk3588" :
+            output_names = [
+                "yolov10_output0_box",
+                "yolov10_output0_class",
+                "yolov10_output1_box",
+                "yolov10_output1_class",
+                "yolov10_output2_box",
+                "yolov10_output2_class",
+            ]
         dynamic = self.args.dynamic
         if dynamic:
             dynamic = {"images": {0: "batch", 2: "height", 3: "width"}}  # shape(1,3,640,640)
