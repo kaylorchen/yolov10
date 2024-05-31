@@ -371,10 +371,13 @@ class Exporter:
             output_names = [
                 "yolov10_output0_box",
                 "yolov10_output0_class",
+                "yolov10_output0_class_sum",
                 "yolov10_output1_box",
+                "yolov10_output1_class_sum",
                 "yolov10_output1_class",
                 "yolov10_output2_box",
                 "yolov10_output2_class",
+                "yolov10_output2_class_sum",
             ]
         dynamic = self.args.dynamic
         if dynamic:

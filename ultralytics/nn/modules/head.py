@@ -515,7 +515,10 @@ class v10Detect(Detect):
             y = []
             for i in range(self.nl):
                 y.append(self.one2one_cv2[i](x[i]))
-                y.append(torch.sigmoid(self.one2one_cv3[i](x[i])))
+                cls = torch.sigmoid(self.one2one_cv3[i](x[i]))
+                cls_sum = torch.clamp(cls.sum(1, keepdim=True), 0, 1)
+                y.append(cls)
+                y.append(cls_sum)
             return y
 
         one2one = self.forward_feat([xi.detach() for xi in x], self.one2one_cv2, self.one2one_cv3)
